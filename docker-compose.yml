@@ -1,0 +1,126 @@
+version: '3.8'
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    container_name: es01
+    environment:
+      node.name: es01
+      cluster.name: es-docker-cluster
+      discovery.seed_hosts: es02,es03
+      cluster.initial_master_nodes: es01,es02,es03
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      xpack.security.enabled: "false"
+      xpack.monitoring.enabled: "false"
+    ulimits: # 프로세스 자원 한도 설정
+      memlock:  # 메모리 내 주소공간의 최대 크기 (sfot: 기본 적용 값, hard: soft에서 최대로 늘릴 한도)
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+    healthcheck:
+      test: ["CMD", "curl","-s" ,"-f", "http://localhost:9200/_cat/health"]
+      interval: 30s
+      start_period: 60s
+
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    container_name: es02
+    environment:
+      node.name: es02
+      cluster.name: es-docker-cluster
+      discovery.seed_hosts: es01,es03
+      cluster.initial_master_nodes: es01,es02,es03
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      xpack.security.enabled: "false"
+      xpack.monitoring.enabled: "false"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    ports:
+      - 9201:9201
+    networks:
+      - elastic
+
+  es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    container_name: es03
+    environment:
+      node.name: es03
+      cluster.name: es-docker-cluster
+      discovery.seed_hosts: es01,es02
+      cluster.initial_master_nodes: es01,es02,es03
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      xpack.security.enabled: "false"
+      xpack.monitoring.enabled: "false"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data03:/usr/share/elasticsearch/data
+    ports:
+      - 9202:9202
+    networks:
+      - elastic
+
+  kib01:  # compose로 묶인 다른 docker container에서 es01:9200을 찾을 수 있음
+    image: docker.elastic.co/kibana/kibana:7.10.2
+    container_name: kib01
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://es01:9200
+      ELASTICSEARCH_HOSTS: http://es01:9200
+    networks:
+      - elastic
+    healthcheck:
+      test: ["CMD", "curl","-s" ,"-f", "http://es01:5601/_cat/health"]
+      interval: 30s
+      start_period: 60s
+    depends_on: 
+      - es01
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.10.2
+    container_name: logstash
+    ports:
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    volumes: 
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/config/pipelines.yml:/usr/share/logstash/config/pipelines.yml
+      - ./logstash/pipeline/:/usr/share/logstash/pipeline/
+      - ./logstash/data/:/usr/share/logstash/tmpdata/
+    networks: 
+      - elastic
+    depends_on: 
+      - es01
+    healthcheck:
+      test: ["CMD", "curl","-s" ,"-f", "http://es01:9600/_cat/health"]
+      interval: 30s
+      start_period: 60s
+  
+
+    
+
+volumes:
+  data01:
+  data02:
+  data03:
+
+networks:
+  elastic:
+    driver: bridge
