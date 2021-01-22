@@ -2,7 +2,7 @@
 # For more information on multiple pipelines, see the documentation:
 #   https://www.elastic.co/guide/en/logstash/current/multiple-pipelines.html
 
-# - pipeline.id: elk_write_conf
-#   path.config: "/usr/share/logstash/pipeline/elk_write_conf.conf"
-- pipeline.id: csv_test
-  path.config: "/usr/share/logstash/pipeline/csv_test.conf"
+# - pipeline.id: csv_test
+#   path.config: "/usr/share/logstash/pipeline/csv_test.conf"
+- pipeline.id: csv_crimes
+  path.config: "/usr/share/logstash/pipeline/csv_crimes.conf"
