@@ -5,7 +5,7 @@
     - 접속 확인
         - elastic:
             $ curl http://localhost:9200
-            $ curl http://localhost:9200/_cat/nodes?v&pretty (cluster 구축 확인)
+            $ curl -XGET "http://es01:9200/crimes2-*/_search?size=1&pretty=true" (cluster 구축 확인)
                 ip         heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
                 172.18.0.3           63          97   9    0.20    0.83     1.06 dilmrt    -      es02
                 172.18.0.4           59          97   9    0.20    0.83     1.06 dilmrt    -      es03
@@ -18,7 +18,7 @@
     - pipeline에 실제 pipelines와 연동해서 pipeline 코드 작성
     - 필요한 데이터는 data 폴더를 바라보고 작성
     - 참고: https://koocci-dev.tistory.com/20, http://jason-heo.github.io/elasticsearch/2016/02/28/logstash-offset.html
-    - 참고: https://www.elastic.co/guide/en/logstash/current/filter-plugins.html
+    - 참고: https://www.elastic.co/guide/en/logstash/current/index.html
     2-1. csv 파일 로딩(예제: csv_test.conf) 
         - input{ file{ path=> ..., start_position=>..., sincedb_path=>....} }
             - start_position은 파일을 읽을때 최초 동작되고 beginning과 end만 존재. stream처리를 하려면 end가 필요하고, 그렇지 않으면 beginning
@@ -47,5 +47,4 @@
     2-2. csv filter: https://www.elastic.co/guide/en/logstash/current/plugins-filters-csv.html
 
 3. elastic data 확인
-    - curl http://localhost:9200/products-*/_search?pretty
-    - curl http://localhost:9200/products-*/_mappings?pretty
+    - dsl 문법: https://esbook.kimjmin.net/05-search

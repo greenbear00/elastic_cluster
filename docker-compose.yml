@@ -73,7 +73,7 @@ services:
     networks:
       - elastic
 
-  kib01:  # compose로 묶인 다른 docker container에서 es01:9200을 찾을 수 있음
+  kib01: 
     image: docker.elastic.co/kibana/kibana:7.10.2
     container_name: kib01
     ports:
