@@ -17,7 +17,8 @@
     - config에 logstash.yml, pipelines.yml 작성
     - pipeline에 실제 pipelines와 연동해서 pipeline 코드 작성
     - 필요한 데이터는 data 폴더를 바라보고 작성
-    - 참고: https://koocci-dev.tistory.com/20
+    - 참고: https://koocci-dev.tistory.com/20, http://jason-heo.github.io/elasticsearch/2016/02/28/logstash-offset.html
+    - 참고: https://www.elastic.co/guide/en/logstash/current/filter-plugins.html
     2-1. csv 파일 로딩(예제: csv_test.conf) 
         - input{ file{ path=> ..., start_position=>..., sincedb_path=>....} }
             - start_position은 파일을 읽을때 최초 동작되고 beginning과 end만 존재. stream처리를 하려면 end가 필요하고, 그렇지 않으면 beginning
@@ -43,3 +44,8 @@
             "@version" : "1"    # ...
             }
         }, .... ]
+    2-2. csv filter: https://www.elastic.co/guide/en/logstash/current/plugins-filters-csv.html
+
+3. elastic data 확인
+    - curl http://localhost:9200/products-*/_search?pretty
+    - curl http://localhost:9200/products-*/_mappings?pretty

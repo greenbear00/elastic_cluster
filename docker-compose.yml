@@ -108,6 +108,7 @@ services:
       - elastic
     depends_on: 
       - es01
+    restart: always
     healthcheck:
       test: ["CMD", "curl","-s" ,"-f", "http://es01:9600/_cat/health"]
       interval: 30s
