@@ -104,6 +104,7 @@ services:
       - ./logstash/config/pipelines.yml:/usr/share/logstash/config/pipelines.yml
       - ./logstash/pipeline/:/usr/share/logstash/pipeline/
       - ./logstash/data/:/usr/share/logstash/tmpdata/
+      - ./logstash/template/:/usr/share/logstash/template/
     networks: 
       - elastic
     depends_on: 

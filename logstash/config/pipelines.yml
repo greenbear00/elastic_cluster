@@ -6,5 +6,5 @@
 #   path.config: "/usr/share/logstash/pipeline/csv_test.conf"
 - pipeline.id: csv_crimes
   path.config: "/usr/share/logstash/pipeline/csv_crimes.conf"
-- pipeline.id: csv_crimes2
-  path.config: "/usr/share/logstash/pipeline/csv_crimes2.conf"
+# - pipeline.id: csv_crimes2
+#   path.config: "/usr/share/logstash/pipeline/csv_crimes2.conf"
